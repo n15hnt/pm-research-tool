@@ -29,12 +29,12 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     if (!data.candidates || !data.candidates[0]) {
-      return res.status(500).json({ error: 'Gemini error: ' + JSON.stringify(data) });
+      return res.status(429).json({ error: 'Rate limit reached. Please try again in a few minutes.' });
     }
     const raw = data.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim();
     const result = JSON.parse(raw);
     res.json(result);
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    res.status(500).json({ error: 'Analysis failed. API may be busy — try again in a moment.' });
   }
 }
